@@ -1,9 +1,11 @@
-import { FileParser } from './file-parser.model';
-import { FilePaserDTO } from './file-parser.dto';
+import * as moment from 'moment';
+import * as XLSX from 'xlsx';
+
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import * as XLSX from 'xlsx';
-import * as moment from 'moment';
+
+import { FilePaserDTO } from './file-parser.dto';
+import { FileParser } from './file-parser.model';
 
 @Injectable()
 export class FileParserService {

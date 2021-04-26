@@ -1,7 +1,7 @@
-import { Controller, Post, UploadedFile } from '@nestjs/common';
-import { FileParserService } from './file-parser.service';
-import { UseInterceptors } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+
+import { FileParserService } from './file-parser.service';
 
 @Controller('file-parser')
 export class FileParserController {
