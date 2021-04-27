@@ -13,9 +13,7 @@ export class FileParserService {
     @InjectModel(FileParser) private filerParserModel: typeof FileParser,
   ) {}
 
-  private fileQueue: Array<FilePaserDTO> = [];
-
-  queueFile(file: Express.Multer.File): XLSX.WorkSheet {
+  processFile(file: Express.Multer.File): void {
     const workBook: XLSX.WorkBook = XLSX.read(file.buffer, {
       type: 'buffer',
       cellDates: true,
@@ -23,32 +21,34 @@ export class FileParserService {
     });
     const sheetName = workBook?.SheetNames[1]; // asigne first sheet name of file
     const sheet: XLSX.WorkSheet = workBook.Sheets[sheetName]; // entire sheet information asigned to sheet variable
-    //const createdDate: Date = workBook.Props.CreatedDate; // file created date information
+    //const createdDate: Date = workBook.rops.CreatedDate; // file created date information
     const jsonData: XLSX.WorkSheet = XLSX.utils.sheet_to_json(sheet, {
       dateNF: 'YYYY-MM-DD',
     });
 
-    for (let index = 0; index < jsonData.length; index++) {
-      const f = new FilePaserDTO();
-      f.cmpNumeroLegal = jsonData[index].CMP_NUMERO_LEGAL;
-      f.proCodigo = jsonData[index].PRO_CODIGO;
-      f.cmpFechaEmision = moment(jsonData[index].CMP_FECHA_EMISION).format(
+    this.prepareFile(jsonData);
+  }
+
+  private prepareFile(file: XLSX.WorkSheet): void {
+    let fileQueue: Array<FilePaserDTO> = [];
+
+    for (let index = 0; index < file.length; index++) {
+      const fileDTO = new FilePaserDTO();
+      fileDTO.cmpNumeroLegal = file[index].CMP_NUMERO_LEGAL;
+      fileDTO.proCodigo = file[index].PRO_CODIGO;
+      fileDTO.cmpFechaEmision = moment(file[index].CMP_FECHA_EMISION).format(
         'DD/MM/YYYY',
       );
 
-      this.fileQueue.push(f);
+      fileQueue.push(fileDTO);
     }
 
-    for (let index = 0; index < this.fileQueue.length; index++) {
-      console.log(this.fileQueue[index]);
-    }
-
-    this.filerParserModel.bulkCreate(this.fileQueue);
-
-    return jsonData;
+    this.insertFile(fileQueue);
   }
 
-  private insertFile(file: FileParser[]) {
-    this.filerParserModel.create(file);
+  private insertFile(bulk: FilePaserDTO[]): void {
+    this.filerParserModel.bulkCreate(bulk, {
+      fields: ['cmpNumeroLegal', 'proCodigo', 'cmpFechaEmision'],
+    }); // add after create options
   }
 }
