@@ -19,7 +19,7 @@ export class FileParserService {
       cellDates: true,
       cellNF: false,
     });
-    const sheetName = workBook?.SheetNames[1]; // asigne first sheet name of file
+    const sheetName = workBook?.SheetNames[0]; // asigne first sheet name of file
     const sheet: XLSX.WorkSheet = workBook.Sheets[sheetName]; // entire sheet information asigned to sheet variable
     //const createdDate: Date = workBook.rops.CreatedDate; // file created date information
     const jsonData: XLSX.WorkSheet = XLSX.utils.sheet_to_json(sheet, {
