@@ -10,7 +10,6 @@ export class FileParserController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   UploadExcelFile(@UploadedFile() file: Express.Multer.File) {
-    console.log('FILE', file);
     return this.fileParserService.processFile(file);
   }
 }

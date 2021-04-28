@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { env } from 'node:process';
+
 import { FileParser } from '../file-parser/file-parser.model';
+import { Student } from '../file-parser/student-model';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { FileParser } from '../file-parser/file-parser.model';
       username: 'root',
       password: 'root',
       database: 'nest_practice',
-      models: [FileParser],
+      models: [FileParser, Student],
       autoLoadModels: true,
     }),
   ],

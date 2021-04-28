@@ -6,11 +6,14 @@ import { InjectModel } from '@nestjs/sequelize';
 
 import { FilePaserDTO } from './file-parser.dto';
 import { FileParser } from './file-parser.model';
+import { Student } from './student-model';
+import { StudentDTO } from './student.dto';
 
 @Injectable()
 export class FileParserService {
   constructor(
     @InjectModel(FileParser) private filerParserModel: typeof FileParser,
+    @InjectModel(Student) private studentModel: typeof Student,
   ) {}
 
   processFile(file: Express.Multer.File): void {
@@ -30,25 +33,61 @@ export class FileParserService {
   }
 
   private prepareFile(file: XLSX.WorkSheet): void {
-    let fileQueue: Array<FilePaserDTO> = [];
+    let fileQueue: Array<StudentDTO> = [];
 
     for (let index = 0; index < file.length; index++) {
-      const fileDTO = new FilePaserDTO();
-      fileDTO.cmpNumeroLegal = file[index].CMP_NUMERO_LEGAL;
+      const fileDTO = new StudentDTO();
+      /* fileDTO.cmpNumeroLegal = file[index].CMP_NUMERO_LEGAL;
       fileDTO.proCodigo = file[index].PRO_CODIGO;
       fileDTO.cmpFechaEmision = moment(file[index].CMP_FECHA_EMISION).format(
         'DD/MM/YYYY',
-      );
+      ); */
+      // validar tipos de datos y que not null esten llenos y que exista el nombre de la columna en excel
+      // si hay un error que devuelva el mismo archivo con un log de errores
+      fileDTO.studentCode = file[index]['Legajo'];
+      fileDTO.cauCode = file[index]['Cau Codigo'];
+      fileDTO.cauSegment = file[index]['SEGMENTO CAU'];
+      fileDTO.cauName = file[index]['NOMBRE CAU'];
+      fileDTO.modality = file[index]['Modalidad'];
+      fileDTO.shift = file[index]['Turno'];
+      fileDTO.level = file[index]['Nivel '];
+      fileDTO.riPeriod = file[index]['Periodo de RI'];
+      fileDTO.listPriceMm = file[index]['Precio de Lista MM'];
+      fileDTO.listPriceAb = file[index]['Precio de Lista Ticket A/B'];
+      fileDTO.diffListPriceGrade =
+        file[index]['Precio de Lista Diferenciado Solo Grado'];
+      fileDTO.currentPromMm =
+        file[index]['Promo Vigente MM(aplica a todas las modalidades)'];
+      fileDTO.ticketAProm = file[index]['PROMO TICKET A'];
+      fileDTO.ticketBProm = file[index]['PROMO  TICKET B'];
+      fileDTO.ticketDProm = file[index]['PROMO TICKET D'];
+      fileDTO.listPrice1Course = file[index]['Precio Lista Arancel 1 Materia'];
+      fileDTO.listPrice3Course = file[index]['Precio Lista Arancel 3 Materia'];
+      fileDTO.listPrice4Course = file[index]['Precio Lista Arancel 4 Materia'];
+      fileDTO.cauCode = file[index]['Precio Lista Arancel 6 Materias'];
+      fileDTO.cauCode = file[index]['PROMO ADICIONAL'];
+      fileDTO.cauCode = file[index]['PROMO ARANCEL P.'];
+      fileDTO.cauCode = file[index]['Precio de Total MM'];
+      fileDTO.cauCode = file[index]['Precio de Total TicketA'];
+      fileDTO.cauCode = file[index]['Precio de Total TicketB'];
+      fileDTO.cauCode = file[index]['Precio de Total TicketD'];
 
       fileQueue.push(fileDTO);
     }
 
-    this.insertFile(fileQueue);
+    //this.insertSingleRecordFile(fileQueue);
+    //return fileQueue
+
+    console.log(fileQueue);
   }
 
-  private insertFile(bulk: FilePaserDTO[]): void {
-    this.filerParserModel.bulkCreate(bulk, {
-      fields: ['cmpNumeroLegal', 'proCodigo', 'cmpFechaEmision'],
-    }); // add after create options
+  // Insertar registros de a 50 por vez.
+
+  private insertBulkFile(bulk: StudentDTO[]): void {
+    this.studentModel.bulkCreate(bulk); // add after create options
+  }
+
+  private insertSingleRecordFile(file: StudentDTO[]): void {
+    this.studentModel.create(file);
   }
 }

@@ -1,10 +1,7 @@
-import { FileParser } from './file-parser/file-parser.model';
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { FileParserModule } from './file-parser/file-parser.module';
-import { SequelizeModule } from '@nestjs/sequelize';
+
 import { DatabaseModule } from './database/database.module';
+import { FileParserModule } from './file-parser/file-parser.module';
 
 @Module({
   imports: [
