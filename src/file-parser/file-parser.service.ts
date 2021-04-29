@@ -44,8 +44,9 @@ export class FileParserService {
       ); */
       // validar tipos de datos y que not null esten llenos y que exista el nombre de la columna en excel
       // si hay un error que devuelva el mismo archivo con un log de errores
+
       fileDTO.studentCode = file[index]['Legajo'];
-      fileDTO.cauCode = file[index]['Cau Codigo'];
+      fileDTO.cauCode = file[index]['Cau Código'];
       fileDTO.cauSegment = file[index]['SEGMENTO CAU'];
       fileDTO.cauName = file[index]['NOMBRE CAU'];
       fileDTO.modality = file[index]['Modalidad'];
@@ -64,30 +65,33 @@ export class FileParserService {
       fileDTO.listPrice1Course = file[index]['Precio Lista Arancel 1 Materia'];
       fileDTO.listPrice3Course = file[index]['Precio Lista Arancel 3 Materia'];
       fileDTO.listPrice4Course = file[index]['Precio Lista Arancel 4 Materia'];
-      fileDTO.cauCode = file[index]['Precio Lista Arancel 6 Materias'];
-      fileDTO.cauCode = file[index]['PROMO ADICIONAL'];
-      fileDTO.cauCode = file[index]['PROMO ARANCEL P.'];
-      fileDTO.cauCode = file[index]['Precio de Total MM'];
-      fileDTO.cauCode = file[index]['Precio de Total TicketA'];
-      fileDTO.cauCode = file[index]['Precio de Total TicketB'];
-      fileDTO.cauCode = file[index]['Precio de Total TicketD'];
+      fileDTO.listPrice6Course = file[index]['Precio Lista Arancel 6 Materias'];
+      fileDTO.additionalProm = file[index]['PROMO ADICIONAL'];
+      fileDTO.pFeeProm = file[index]['PROMO ARANCEL P.'];
+      fileDTO.mmTotal = file[index]['Precio de Total MM'];
+      fileDTO.ticketATotal = file[index]['Precio de Total TicketA'];
+      fileDTO.ticketBTotal = file[index]['Precio de Total TicketB'];
+      fileDTO.ticketDTotal = file[index]['Precio de Total TicketD'];
 
       fileQueue.push(fileDTO);
     }
 
+    this.insertBulkFile(fileQueue);
     //this.insertSingleRecordFile(fileQueue);
     //return fileQueue
 
-    console.log(fileQueue);
+    //console.log(fileQueue);
   }
 
   // Insertar registros de a 50 por vez.
-
   private insertBulkFile(bulk: StudentDTO[]): void {
     this.studentModel.bulkCreate(bulk); // add after create options
   }
 
   private insertSingleRecordFile(file: StudentDTO[]): void {
-    this.studentModel.create(file);
+    for (let index = 0; index < 2; index++) {
+      const element = file[index];
+      this.studentModel.create(element);
+    }
   }
 }

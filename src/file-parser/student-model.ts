@@ -12,10 +12,10 @@ export class Student extends Model {
   })
   studentCode: string;
 
-  @Column({ field: 'cau_code', type: DataType.STRING(25), allowNull: false })
+  @Column({ field: 'cau_code', type: DataType.STRING(25) }) //, allowNull: false
   cauCode: string;
 
-  @Column({ field: 'cau_segment', type: DataType.STRING(1), allowNull: false })
+  @Column({ field: 'cau_segment', type: DataType.STRING(1) }) //, allowNull: false
   cauSegment: string;
 
   @Column({ field: 'cau_name', type: DataType.STRING(255) })
